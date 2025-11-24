@@ -24,4 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/create_telegram_form', function () {
+    return Inertia::render('Telegram/Index');
+});
+
+
 require __DIR__.'/auth.php';
