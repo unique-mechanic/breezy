@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TelegramGroupController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,8 +25,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/create_telegram_form', function () {
-    return Inertia::render('Telegram/Index');
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Your existing routes...
+
+    // Add these two new routes
+    Route::get('/telegram/create-group', [TelegramGroupController::class, 'showForm'])
+        ->name('telegram.create-group.form');
+
+    Route::post('/telegram/create-group', [TelegramGroupController::class, 'createGroup'])
+        ->name('telegram.create-group');
 });
 
 

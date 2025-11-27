@@ -24,7 +24,7 @@ class TelegramGroupController extends Controller
      */
     public function showForm()
     {
-        return inertia('Telegram/Index');
+        return inertia('Telegram/CreateGroup');
     }
 
     /**

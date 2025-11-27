@@ -39,6 +39,9 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink :href="route('telegram.create-group.form')" :active="route().current('telegram.create-group.form')">
+                                    Create Telegram Group
+                                </NavLink>
                             </div>
                         </div>
 
@@ -148,6 +151,7 @@ const showingNavigationDropdown = ref(false);
                         </ResponsiveNavLink>
                     </div>
 
+
                     <!-- Responsive Settings Options -->
                     <div
                         class="border-t border-gray-200 pb-1 pt-4"
@@ -188,6 +192,8 @@ const showingNavigationDropdown = ref(false);
                     <slot name="header" />
                 </div>
             </header>
+
+
 
             <!-- Page Content -->
             <main>
