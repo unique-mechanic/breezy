@@ -39,6 +39,12 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    :href="route('habits.index')"
+                                    :active="route().current('habits.*')"
+                                >
+                                    Habits
+                                </NavLink>
                                 <NavLink :href="route('telegram.create-group.form')" :active="route().current('telegram.create-group.form')">
                                     Create Telegram Group
                                 </NavLink>
@@ -148,6 +154,12 @@ const showingNavigationDropdown = ref(false);
                             :active="route().current('dashboard')"
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            :href="route('habits.index')"
+                            :active="route().current('habits.*')"
+                        >
+                            Habits
                         </ResponsiveNavLink>
                     </div>
 

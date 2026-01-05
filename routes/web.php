@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HabitController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TelegramGroupController;
 use Illuminate\Foundation\Application;
@@ -26,9 +27,20 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Your existing routes...
+    // Habit tracking routes
+    Route::get('/habits', [HabitController::class, 'index'])->name('habits.index');
+    Route::get('/habits/create', [HabitController::class, 'create'])->name('habits.create');
+    Route::post('/habits', [HabitController::class, 'store'])->name('habits.store');
+    Route::get('/habits/{habit}', [HabitController::class, 'show'])->name('habits.show');
+    Route::get('/habits/{habit}/edit', [HabitController::class, 'edit'])->name('habits.edit');
+    Route::patch('/habits/{habit}', [HabitController::class, 'update'])->name('habits.update');
+    Route::delete('/habits/{habit}', [HabitController::class, 'destroy'])->name('habits.destroy');
+    
+    // API endpoints for habit logging
+    Route::post('/habits/{habit}/log', [HabitController::class, 'log'])->name('habits.log');
+    Route::post('/habits/{habit}/toggle-today', [HabitController::class, 'toggleToday'])->name('habits.toggle-today');
 
-    // Add these two new routes
+    // Telegram routes
     Route::get('/telegram/create-group', [TelegramGroupController::class, 'showForm'])
         ->name('telegram.create-group.form');
 
