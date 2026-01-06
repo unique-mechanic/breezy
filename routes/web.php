@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\HabitController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TelegramGroupController;
@@ -39,6 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // API endpoints for habit logging
     Route::post('/habits/{habit}/log', [HabitController::class, 'log'])->name('habits.log');
     Route::post('/habits/{habit}/toggle-today', [HabitController::class, 'toggleToday'])->name('habits.toggle-today');
+
+    // Analytics routes
+    Route::get('/analytics', [AnalyticsController::class, 'dashboard'])->name('analytics.dashboard');
+    Route::get('/analytics/habits/{habit}', [AnalyticsController::class, 'habitAnalytics'])->name('analytics.habit');
 
     // Telegram routes
     Route::get('/telegram/create-group', [TelegramGroupController::class, 'showForm'])
