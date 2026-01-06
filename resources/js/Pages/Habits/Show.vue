@@ -30,12 +30,20 @@
                 </div>
               </div>
             </div>
-            <Link
-              href="/habits"
-              class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200"
-            >
-              ← Back to Habits
-            </Link>
+            <div class="flex gap-2">
+              <Link
+                :href="`/analytics/habits/${habit.id}`"
+                class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-200"
+              >
+                📊 Analytics
+              </Link>
+              <Link
+                href="/habits"
+                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-200"
+              >
+                ← Back
+              </Link>
+            </div>
           </div>
 
           <!-- Stats Grid -->
