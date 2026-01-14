@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Habit;
+use App\Services\MilestoneService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HabitController extends Controller
 {
+    protected MilestoneService $milestoneService;
+
+    public function __construct(MilestoneService $milestoneService)
+    {
+        $this->milestoneService = $milestoneService;
+    }
+
     /**
      * Show the habits dashboard
      */
@@ -111,6 +119,9 @@ class HabitController extends Controller
         ]);
 
         $habit = auth()->user()->habits()->create($validated);
+
+        // Create default milestones for this habit
+        $this->milestoneService->createDefaultMilestones($habit);
 
         return redirect()->route('habits.show', $habit)
             ->with('success', 'Habit created successfully!');

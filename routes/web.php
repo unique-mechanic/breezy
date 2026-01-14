@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\HabitController;
+use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TelegramGroupController;
 use Illuminate\Foundation\Application;
@@ -44,6 +45,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Analytics routes
     Route::get('/analytics', [AnalyticsController::class, 'dashboard'])->name('analytics.dashboard');
     Route::get('/analytics/habits/{habit}', [AnalyticsController::class, 'habitAnalytics'])->name('analytics.habit');
+
+    // Milestone routes
+    Route::get('/milestones', [MilestoneController::class, 'dashboard'])->name('milestones.dashboard');
+    Route::get('/milestones/habits/{habit}', [MilestoneController::class, 'show'])->name('milestones.show');
 
     // Telegram routes
     Route::get('/telegram/create-group', [TelegramGroupController::class, 'showForm'])

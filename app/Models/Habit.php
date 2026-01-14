@@ -36,6 +36,11 @@ class Habit extends Model
         return $this->hasMany(HabitLog::class);
     }
 
+    public function milestones(): HasMany
+    {
+        return $this->hasMany(Milestone::class)->orderBy('order');
+    }
+
     /**
      * Get logs for the current year (365 days back)
      */

@@ -45,6 +45,18 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Habits
                                 </NavLink>
+                                <NavLink
+                                    :href="route('analytics.dashboard')"
+                                    :active="route().current('analytics.*')"
+                                >
+                                    Analytics
+                                </NavLink>
+                                <NavLink
+                                    :href="route('milestones.dashboard')"
+                                    :active="route().current('milestones.*')"
+                                >
+                                    Milestones
+                                </NavLink>
                                 <NavLink :href="route('telegram.create-group.form')" :active="route().current('telegram.create-group.form')">
                                     Create Telegram Group
                                 </NavLink>
