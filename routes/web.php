@@ -60,7 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Feature Flag routes
     Route::get('/api/features/{featureName}', [FeatureFlagController::class, 'status'])->name('features.status');
-    Route::post('/features/{flag}/toggle-user', [FeatureFlagController::class, 'toggleForUser'])->name('features.toggle-user');
+    Route::post('/features/{featureName}/toggle-user', [FeatureFlagController::class, 'toggleForUser'])->name('features.toggle-user');
 });
 
 // Feature flag management routes (admin only) - will be protected in controller

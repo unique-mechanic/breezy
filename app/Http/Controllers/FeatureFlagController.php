@@ -58,17 +58,17 @@ class FeatureFlagController extends Controller
     /**
      * Toggle feature for authenticated user
      */
-    public function toggleForUser(Request $request, FeatureFlag $flag)
+    public function toggleForUser(Request $request, string $featureName)
     {
         $user = auth()->user();
         
-        if ($this->featureService->isEnabledForUser($flag->name, $user)) {
-            $this->featureService->disableForUser($flag->name, $user);
+        if ($this->featureService->isEnabledForUser($featureName, $user)) {
+            $this->featureService->disableForUser($featureName, $user);
         } else {
-            $this->featureService->enableForUser($flag->name, $user);
+            $this->featureService->enableForUser($featureName, $user);
         }
 
-        return back()->with('success', "Feature '{$flag->name}' toggled for your account.");
+        return back()->with('success', "Feature '{$featureName}' toggled for your account.");
     }
 
     /**
