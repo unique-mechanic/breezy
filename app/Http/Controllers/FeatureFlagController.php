@@ -65,8 +65,19 @@ class FeatureFlagController extends Controller
         
         if ($this->featureService->isEnabledForUser($featureName, $user)) {
             $this->featureService->disableForUser($featureName, $user);
+            $enabled = false;
         } else {
             $this->featureService->enableForUser($featureName, $user);
+            $enabled = true;
+        }
+
+        // Return JSON for API requests, redirect for form submissions
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Feature '{$featureName}' toggled for your account.",
+                'enabled' => $enabled,
+            ]);
         }
 
         return back()->with('success', "Feature '{$featureName}' toggled for your account.");
