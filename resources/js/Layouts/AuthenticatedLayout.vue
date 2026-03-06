@@ -214,20 +214,18 @@ initializeDarkMode();
                             </ResponsiveNavLink>
                         </div>
                     </div>
-                </div> transition-colors duration-200 dark:bg-gray-800 dark:shadow-lg"
-                v-if="$slots.header"
-            >
-                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 dark:text-gray-100
+                </div>
+            </nav>
+
+            <!-- Page Heading -->
             <header
-                class="bg-white shadow"
+                class="bg-white shadow transition-colors duration-200 dark:bg-gray-800 dark:shadow-lg"
                 v-if="$slots.header"
             >
-                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 dark:text-gray-100">
                     <slot name="header" />
                 </div>
             </header>
-
-
 
             <!-- Page Content -->
             <main>

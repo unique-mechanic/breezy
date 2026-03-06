@@ -14,11 +14,6 @@
 }
 
 @layer components {
-    /* Dark mode transitions for common elements */
-    .transition-colors {
-        @apply transition-colors duration-200;
-    }
-
     /* Light text in dark mode */
     .dark input,
     .dark textarea {
