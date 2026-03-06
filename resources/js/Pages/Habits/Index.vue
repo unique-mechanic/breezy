@@ -170,32 +170,35 @@
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/vue3';
+import axios from 'axios';
 
-defineProps({
+const props = defineProps({
   habits: Array,
 });
+
+const habits = ref(props.habits);
 
 const getWeeks = (yearLogs) => {
   const weeks = [];
   const startDate = new Date(new Date().getFullYear(), 0, 1);
   const endDate = new Date();
 
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const weekStart = new Date(d);
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+  // Find the Sunday of the week containing Jan 1
+  const firstWeekStart = new Date(startDate);
+  firstWeekStart.setDate(firstWeekStart.getDate() - firstWeekStart.getDay());
 
-    const weekIndex = Math.floor((d - startDate) / (7 * 24 * 60 * 60 * 1000));
-    if (!weeks[weekIndex]) {
-      weeks[weekIndex] = new Date(weekStart);
-    }
+  // Generate all week starts from Jan 1 to today
+  for (let week = new Date(firstWeekStart); week <= endDate; week.setDate(week.getDate() + 7)) {
+    weeks.push(new Date(week));
   }
 
-  return weeks.filter(Boolean);
+  return weeks;
 };
 
 const getDateForWeekDay = (weekStart, dayIndex) => {
+  // dayIndex is 1-7 (Sunday=1, Monday=2, ..., Saturday=7)
   const date = new Date(weekStart);
-  date.setDate(date.getDate() + dayIndex - 1);
+  date.setDate(date.getDate() + (dayIndex - 1));
   return date.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
@@ -235,24 +238,49 @@ const toggleDay = async (habitId, week, dayIndex) => {
   const dateStr = date.toISOString().split('T')[0];
 
   try {
-    const response = await fetch(`/habits/${habitId}/log`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('[name=csrf-token]').content,
-      },
-      body: JSON.stringify({
-        date: dateStr,
-        completed: true,
-      }),
+    const response = await axios.post(`/habits/${habitId}/log`, {
+      date: dateStr,
+      completed: true,
+      notes: null,
     });
 
-    if (response.ok) {
-      // Reload the component or update the state
-      window.location.reload();
+    if (response.data.success) {
+      // Update the habit data locally instead of full reload
+      const habitIndex = habits.value.findIndex(h => h.id === habitId);
+      if (habitIndex !== -1) {
+        const habit = habits.value[habitIndex];
+        
+        // Update year_logs with the new log
+        habit.year_logs[dateStr] = {
+          id: response.data.log.id,
+          date: dateStr,
+          completed: response.data.log.completed,
+          notes: response.data.log.notes,
+        };
+        
+        // Update stats
+        habit.current_streak = response.data.current_streak;
+        habit.total_completions = habit.getTotalCompletions?.() || (habit.year_logs[dateStr].completed ? 1 : 0);
+        
+        // Force component update
+        habits.value = [...habits.value];
+      }
     }
   } catch (error) {
     console.error('Error logging habit:', error);
+    
+    let errorMessage = 'Unknown error';
+    
+    if (error.response?.data?.errors) {
+      // Validation errors
+      errorMessage = Object.values(error.response.data.errors).flat().join(', ');
+    } else if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    alert(`Error logging habit: ${errorMessage}`);
   }
 };
 </script>

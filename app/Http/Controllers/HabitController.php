@@ -169,7 +169,7 @@ class HabitController extends Controller
         $this->authorize('update', $habit);
 
         $validated = $request->validate([
-            'date' => 'required|date',
+            'date' => 'required|date_format:Y-m-d',
             'completed' => 'required|boolean',
             'notes' => 'nullable|string|max:1000',
         ]);
