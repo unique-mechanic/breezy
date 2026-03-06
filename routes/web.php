@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\FeatureFlagController;
 use App\Http\Controllers\HabitController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\ProfileController;
@@ -56,6 +57,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/telegram/create-group', [TelegramGroupController::class, 'createGroup'])
         ->name('telegram.create-group');
+
+    // Feature Flag routes
+    Route::get('/api/features/{featureName}', [FeatureFlagController::class, 'status'])->name('features.status');
+    Route::post('/features/{featureName}/toggle-user', [FeatureFlagController::class, 'toggleForUser'])->name('features.toggle-user');
+});
+
+// Feature flag management routes (admin only) - will be protected in controller
+Route::middleware(['auth', 'verified'])->prefix('admin/features')->name('features.')->group(function () {
+    Route::get('/', [FeatureFlagController::class, 'index'])->name('index');
+    Route::post('/', [FeatureFlagController::class, 'store'])->name('store');
+    Route::post('{flag}/toggle', [FeatureFlagController::class, 'toggle'])->name('toggle');
 });
 
 

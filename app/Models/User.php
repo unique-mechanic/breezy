@@ -51,4 +51,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Habit::class);
     }
+
+    public function featureFlags(): HasMany
+    {
+        return $this->hasMany(UserFeatureFlag::class);
+    }
 }
