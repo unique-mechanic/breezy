@@ -16,7 +16,7 @@ class FeatureFlagSeeder extends Seeder
             [
                 'name' => 'dark_mode',
                 'description' => 'Dark mode theme for the application',
-                'enabled' => false,
+                'enabled' => true,
             ],
             [
                 'name' => 'social_sharing',
