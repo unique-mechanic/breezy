@@ -183,22 +183,22 @@ const getWeeks = (yearLogs) => {
   const startDate = new Date(new Date().getFullYear(), 0, 1);
   const endDate = new Date();
 
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const weekStart = new Date(d);
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+  // Find the Sunday of the week containing Jan 1
+  const firstWeekStart = new Date(startDate);
+  firstWeekStart.setDate(firstWeekStart.getDate() - firstWeekStart.getDay());
 
-    const weekIndex = Math.floor((d - startDate) / (7 * 24 * 60 * 60 * 1000));
-    if (!weeks[weekIndex]) {
-      weeks[weekIndex] = new Date(weekStart);
-    }
+  // Generate all week starts from Jan 1 to today
+  for (let week = new Date(firstWeekStart); week <= endDate; week.setDate(week.getDate() + 7)) {
+    weeks.push(new Date(week));
   }
 
-  return weeks.filter(Boolean);
+  return weeks;
 };
 
 const getDateForWeekDay = (weekStart, dayIndex) => {
+  // dayIndex is 1-7 (Sunday=1, Monday=2, ..., Saturday=7)
   const date = new Date(weekStart);
-  date.setDate(date.getDate() + dayIndex - 1);
+  date.setDate(date.getDate() + (dayIndex - 1));
   return date.toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
