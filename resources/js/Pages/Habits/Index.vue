@@ -235,24 +235,48 @@ const toggleDay = async (habitId, week, dayIndex) => {
   const dateStr = date.toISOString().split('T')[0];
 
   try {
+    const csrfToken = document.querySelector('[name=csrf-token]');
+    if (!csrfToken) {
+      console.error('CSRF token not found');
+      alert('Error: Security token not found. Please refresh the page.');
+      return;
+    }
+
     const response = await fetch(`/habits/${habitId}/log`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('[name=csrf-token]').content,
+        'X-CSRF-TOKEN': csrfToken.content,
       },
       body: JSON.stringify({
         date: dateStr,
         completed: true,
+        notes: null,
       }),
     });
 
-    if (response.ok) {
-      // Reload the component or update the state
-      window.location.reload();
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Error response:', data);
+      let errorMessage = 'Unknown error';
+      
+      if (data.errors) {
+        // Validation errors
+        errorMessage = Object.values(data.errors).flat().join(', ');
+      } else if (data.message) {
+        errorMessage = data.message;
+      }
+      
+      alert(`Error logging habit: ${errorMessage}`);
+      return;
     }
+
+    // Reload the component or update the state
+    window.location.reload();
   } catch (error) {
     console.error('Error logging habit:', error);
+    alert(`Error: ${error.message}`);
   }
 };
 </script>
