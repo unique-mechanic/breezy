@@ -170,6 +170,7 @@
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/vue3';
+import axios from 'axios';
 
 defineProps({
   habits: Array,
@@ -235,48 +236,31 @@ const toggleDay = async (habitId, week, dayIndex) => {
   const dateStr = date.toISOString().split('T')[0];
 
   try {
-    const csrfToken = document.querySelector('[name=csrf-token]');
-    if (!csrfToken) {
-      console.error('CSRF token not found');
-      alert('Error: Security token not found. Please refresh the page.');
-      return;
-    }
-
-    const response = await fetch(`/habits/${habitId}/log`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrfToken.content,
-      },
-      body: JSON.stringify({
-        date: dateStr,
-        completed: true,
-        notes: null,
-      }),
+    const response = await axios.post(`/habits/${habitId}/log`, {
+      date: dateStr,
+      completed: true,
+      notes: null,
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('Error response:', data);
-      let errorMessage = 'Unknown error';
-      
-      if (data.errors) {
-        // Validation errors
-        errorMessage = Object.values(data.errors).flat().join(', ');
-      } else if (data.message) {
-        errorMessage = data.message;
-      }
-      
-      alert(`Error logging habit: ${errorMessage}`);
-      return;
+    if (response.data.success) {
+      // Reload the component or update the state
+      window.location.reload();
     }
-
-    // Reload the component or update the state
-    window.location.reload();
   } catch (error) {
     console.error('Error logging habit:', error);
-    alert(`Error: ${error.message}`);
+    
+    let errorMessage = 'Unknown error';
+    
+    if (error.response?.data?.errors) {
+      // Validation errors
+      errorMessage = Object.values(error.response.data.errors).flat().join(', ');
+    } else if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    alert(`Error logging habit: ${errorMessage}`);
   }
 };
 </script>
