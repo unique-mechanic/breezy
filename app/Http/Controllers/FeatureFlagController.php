@@ -16,7 +16,8 @@ class FeatureFlagController extends Controller
     {
         $this->featureService = $featureService;
         $this->middleware('auth');
-        $this->middleware('admin');
+        // Admin middleware only for specific methods
+        $this->middleware('admin')->only(['index', 'toggle', 'store']);
     }
 
     /**
