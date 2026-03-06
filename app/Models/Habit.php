@@ -48,11 +48,22 @@ class Habit extends Model
     {
         $startDate = now()->subDays(365);
         
-        return $this->logs()
+        $logs = $this->logs()
             ->whereBetween('date', [$startDate, now()])
             ->orderBy('date')
-            ->get()
-            ->keyBy('date');
+            ->get();
+        
+        // Convert to array keyed by date string
+        return $logs->mapWithKeys(function ($log) {
+            return [
+                $log->date->format('Y-m-d') => [
+                    'id' => $log->id,
+                    'date' => $log->date->format('Y-m-d'),
+                    'completed' => $log->completed,
+                    'notes' => $log->notes,
+                ]
+            ];
+        })->toArray();
     }
 
     /**

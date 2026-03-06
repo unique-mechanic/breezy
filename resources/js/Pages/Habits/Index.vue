@@ -172,9 +172,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
 
-defineProps({
+const props = defineProps({
   habits: Array,
 });
+
+const habits = ref(props.habits);
 
 const getWeeks = (yearLogs) => {
   const weeks = [];
@@ -243,8 +245,26 @@ const toggleDay = async (habitId, week, dayIndex) => {
     });
 
     if (response.data.success) {
-      // Reload the component or update the state
-      window.location.reload();
+      // Update the habit data locally instead of full reload
+      const habitIndex = habits.value.findIndex(h => h.id === habitId);
+      if (habitIndex !== -1) {
+        const habit = habits.value[habitIndex];
+        
+        // Update year_logs with the new log
+        habit.year_logs[dateStr] = {
+          id: response.data.log.id,
+          date: dateStr,
+          completed: response.data.log.completed,
+          notes: response.data.log.notes,
+        };
+        
+        // Update stats
+        habit.current_streak = response.data.current_streak;
+        habit.total_completions = habit.getTotalCompletions?.() || (habit.year_logs[dateStr].completed ? 1 : 0);
+        
+        // Force component update
+        habits.value = [...habits.value];
+      }
     }
   } catch (error) {
     console.error('Error logging habit:', error);
